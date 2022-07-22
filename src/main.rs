@@ -11,14 +11,16 @@ type Cell = Vec<Vec<char>>;
 struct Board {
     width: usize,
     height: usize,
+    cicles: usize,
     matrix: Cell,
 }
 
 impl Board {
-    fn new(width: usize, height: usize) -> Self {
+    fn new(width: usize, height: usize, cicles: usize) -> Self {
         Board {
             width,
             height,
+            cicles,
             matrix: vec![vec!['.'; width]; height],
         }
     }
@@ -68,9 +70,9 @@ impl Board {
                             continue;
                         }
                         if (i as i32 - u).is_negative()
-                            || (i as i32 - u) == self.width as i32
+                            || (i as i32 - u) == (self.height as i32)
                             || (j as i32 - k).is_negative()
-                            || (j as i32 - k) == self.height as i32
+                            || (j as i32 - k) == (self.width as i32)
                         {
                             continue;
                         }
@@ -151,9 +153,9 @@ fn run(board: &mut Board, random: String) {
         board.apply_board(name);
     }
     
-    'running: loop {
+    for _i in 0..board.cicles {
         // clear terminal stdout
-        std::thread::sleep(std::time::Duration::from_millis(100));
+        std::thread::sleep(std::time::Duration::from_millis(250));
         std::process::Command::new("clear").status().unwrap();
         board.run();
         board.show();
@@ -167,11 +169,12 @@ fn main() {
     args.next();
     let width = args.next().unwrap();
     let height = args.next().unwrap();
+    let cicles = args.next().unwrap();
     let random = match args.next() {
         Some(r) => r,
         None => String::from(""),
     };
 
-    let mut board = Board::new(width.parse::<usize>().unwrap(), height.parse::<usize>().unwrap()); 
+    let mut board = Board::new(width.parse::<usize>().unwrap(), height.parse::<usize>().unwrap(), cicles.parse::<usize>().unwrap()); 
     run(&mut board, random);
 }
